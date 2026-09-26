@@ -19,6 +19,8 @@ Open http://localhost:8080. No package installation or build step is required.
 - `dist/index.html`: page content and loading-screen markup.
 - `dist/styles.css`: responsive layout and main animations.
 - `dist/loader.css`: loading-screen theme and animations.
+- `dist/event-layout.css`: Quantexa-inspired structure, using the unchanged theme tokens.
+- `dist/event-motion.js`: word reveals, event dock, and reading progress.
 - `dist/app.js`: interactions, countdown, and loading lifecycle.
 - `dist/assets/dream-coder.png`: cloud character artwork.
 
@@ -29,3 +31,5 @@ Dates, venue, prizes, judges, contact details, and social links currently contai
 The registration modal is a frontend demo: it does not save registrations or send emails, despite its current success copy. Connect a registration service and update that copy before accepting real applications.
 
 Serve the contents of `dist/` from any static web host. Motion is reduced for visitors who request reduced motion in their system settings.
+
+See [ANIMATION-NOTES.md](ANIMATION-NOTES.md) for layout references and Codrops motion inspiration.
