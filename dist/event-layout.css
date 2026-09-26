@@ -131,6 +131,16 @@ a,button,summary { cursor:pointer; }
 .showcase-caption { position:absolute; bottom:24px; width:100%; text-align:center; color:var(--muted); font:10px 'DM Mono',monospace; letter-spacing:.18em; pointer-events:none; }
 .sky-target { position:absolute; z-index:5; left:var(--target-x,50%); top:var(--target-y,50%); width:24px; height:24px; border:1px solid var(--cyan); border-radius:50%; transform:translate(-50%,-50%); opacity:0; pointer-events:none; box-shadow:0 0 20px rgba(110,231,255,.2); }
 .is-exploring .sky-target { opacity:.8; }
+.dreamer-portrait { position:absolute; z-index:3; width:320px; height:480px; left:50%; top:50%; transform:translate(-50%,-50%); pointer-events:none; }
+.dreamer-portrait img { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; user-select:none; }
+/* Reuse the illustration's actual eye pixels as two independent animation layers. */
+.eye-bed { position:absolute; background:#202039; border-radius:50%; filter:blur(2px); }
+.eye-bed-left { left:45.8%; top:24.1%; width:9.2%; height:3.5%; }
+.eye-bed-right { left:56.9%; top:22.7%; width:8%; height:4.3%; }
+.dreamer-eye { transform:translate(var(--eye-x,0px),var(--eye-y,0px)); mix-blend-mode:lighten; will-change:transform; }
+.dreamer-eye-left { clip-path:ellipse(4.5% 2.1% at 50.3% 25.8%); }
+.dreamer-eye-right { clip-path:ellipse(4.1% 2.3% at 60.5% 24.8%); }
+.cursor-showcase .orbit { animation:none; }
 .showcase-footer { display:flex; align-items:center; justify-content:space-between; gap:20px; padding-top:16px; color:var(--muted); font-size:13px; }
 .showcase-footer button { background:none; border:0; border-bottom:1px solid var(--line); color:var(--cream); }
 @media(max-width:760px) {
@@ -138,6 +148,7 @@ a,button,summary { cursor:pointer; }
   .showcase-heading p { max-width:100%; }
   .cursor-showcase .hero-stage { height:460px; border-radius:24px; }
   .cursor-showcase .hero-character { width:180px; height:240px; }
+  .dreamer-portrait { width:240px; height:360px; }
   .showcase-label { inset:20px 18px auto; font-size:9px; letter-spacing:0; }
   .showcase-footer { font-size:11px; }
   .showcase-footer .text-link { font-size:11px; }

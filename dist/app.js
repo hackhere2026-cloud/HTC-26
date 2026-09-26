@@ -94,15 +94,14 @@
   function renderDreamer() {
     position.x += (destination.x - position.x) * (reduceMotion ? 1 : .12);
     position.y += (destination.y - position.y) * (reduceMotion ? 1 : .12);
-    heroCharacter.style.setProperty('--char-x', `${position.x}px`);
-    heroCharacter.style.setProperty('--char-y', `${position.y}px`);
-    heroCharacter.style.setProperty('--char-ry', `${reduceMotion ? 0 : (destination.x - position.x) * .04}deg`);
+    heroCharacter.style.setProperty('--eye-x', `${position.x}px`);
+    heroCharacter.style.setProperty('--eye-y', `${position.y}px`);
     if (Math.abs(destination.x - position.x) + Math.abs(destination.y - position.y) > .1) skyFrame = requestAnimationFrame(renderDreamer);
     else skyFrame = 0;
   }
   function guideDreamer(x, y) {
-    const maxX = Math.max(0, (heroStage.clientWidth - heroCharacter.offsetWidth) / 2 - 24);
-    const maxY = Math.max(0, (heroStage.clientHeight - heroCharacter.offsetHeight) / 2 - 42);
+    const maxX = heroCharacter.offsetWidth * .012;
+    const maxY = heroCharacter.offsetHeight * .005;
     destination.x = Math.max(-maxX, Math.min(maxX, x));
     destination.y = Math.max(-maxY, Math.min(maxY, y));
     if (!skyFrame) skyFrame = requestAnimationFrame(renderDreamer);
@@ -112,21 +111,14 @@
     const box = heroStage.getBoundingClientRect();
     const nx = Math.max(-1, Math.min(1, (event.clientX - box.left - box.width / 2) / (box.width / 2)));
     const ny = Math.max(-1, Math.min(1, (event.clientY - box.top - box.height / 2) / (box.height / 2)));
-    guideDreamer(nx * box.width / 2, ny * box.height / 2);
-    heroStage.style.setProperty('--target-x', `${event.clientX - box.left}px`);
-    heroStage.style.setProperty('--target-y', `${event.clientY - box.top}px`);
+    guideDreamer(nx * heroCharacter.offsetWidth * .012, ny * heroCharacter.offsetHeight * .005);
     heroStage.classList.add('is-exploring');
-    document.getElementById('dreamerStatus').textContent = 'Following your lead';
-    heroStage.querySelectorAll('[data-depth]').forEach(el => {
-      const depth = Number(el.dataset.depth);
-      el.style.translate = `${nx * depth * 12}px ${ny * depth * 10}px`;
-    });
+    document.getElementById('dreamerStatus').textContent = 'Eyes on you';
   }
   function resetDreamer() {
     guideDreamer(0, 0);
     heroStage.classList.remove('is-exploring');
     document.getElementById('dreamerStatus').textContent = 'Ready to explore';
-    heroStage.querySelectorAll('[data-depth]').forEach(el => el.style.translate = '0px 0px');
   }
   heroStage.addEventListener('pointermove', moveInSky);
   heroStage.addEventListener('pointerdown', event => { heroStage.setPointerCapture(event.pointerId); moveInSky(event); });
@@ -135,7 +127,7 @@
   heroStage.addEventListener('pointercancel', resetDreamer);
   heroStage.addEventListener('blur', resetDreamer);
   heroStage.addEventListener('keydown', event => {
-    const moves = { ArrowLeft: [-40, 0], ArrowRight: [40, 0], ArrowUp: [0, -40], ArrowDown: [0, 40] };
+    const moves = { ArrowLeft: [-2, 0], ArrowRight: [2, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
     if (event.key === 'Escape') resetDreamer();
     if (!moves[event.key]) return;
     event.preventDefault();

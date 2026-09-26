@@ -62,16 +62,20 @@
     </section>
 
     <section class="cursor-showcase section-shell" id="playground" aria-labelledby="dreamer-title">
-      <div class="showcase-heading"><div><span class="section-kicker">A little cloud play</span><h2 id="dreamer-title">Guide the <em>dreamer.</em></h2></div><p id="dreamer-help">Move your cursor inside the sky and watch the dreamer follow. On mobile, drag to explore. Keyboard? Focus the sky and use the arrow keys.</p></div>
+      <div class="showcase-heading"><div><span class="section-kicker">A little cloud play</span><h2 id="dreamer-title">Catch their <em>eye.</em></h2></div><p id="dreamer-help">Move your cursor inside the sky. Only the dreamer's eyes follow you. On mobile, drag to look around, or focus the sky and use the arrow keys.</p></div>
       <div class="hero-stage" id="heroStage" tabindex="0" role="region" aria-label="Interactive dreamer playground" aria-describedby="dreamer-help">
         <div class="showcase-label"><span>✦ INTERACTIVE SKY</span><span id="dreamerStatus">Ready to explore</span></div>
         <div class="stage-halo" data-depth="0.4"></div><div class="orbit orbit-one" data-depth="0.7"><i></i></div><div class="orbit orbit-two" data-depth="1.05"><i></i></div>
         <div class="floating-code code-a" data-depth="1.4">{ idea → ship }</div><div class="floating-code code-b" data-depth="1.1">03:47 AM</div>
-        <img class="hero-character" id="heroCharacter" src="assets/dream-coder.png" alt="A floating hacker with a glowing cloud for a head, working on a laptop">
-        <span class="sky-target" aria-hidden="true"></span>
-        <div class="showcase-caption">YOUR CURIOSITY. THEIR NEXT DESTINATION.</div>
+        <div class="dreamer-portrait" id="heroCharacter" role="img" aria-label="A cloud-headed hacker whose glowing eyes follow your cursor">
+          <img class="dreamer-body" src="assets/dream-coder.png" alt="" draggable="false">
+          <span class="eye-bed eye-bed-left" aria-hidden="true"></span><span class="eye-bed eye-bed-right" aria-hidden="true"></span>
+          <img class="dreamer-eye dreamer-eye-left" src="assets/dream-coder.png" alt="" aria-hidden="true" draggable="false">
+          <img class="dreamer-eye dreamer-eye-right" src="assets/dream-coder.png" alt="" aria-hidden="true" draggable="false">
+        </div>
+        <div class="showcase-caption">STILL DREAMING. ALL EYES ON YOU.</div>
       </div>
-      <div class="showcase-footer"><span>A small escape before the big build.</span><button class="text-link" id="resetDreamer" type="button">Return to center <span>↺</span></button></div>
+      <div class="showcase-footer"><span>A small escape before the big build.</span><button class="text-link" id="resetDreamer" type="button">Reset gaze <span>↺</span></button></div>
     </section>
 
     <section class="countdown-strip" aria-label="Countdown to Hack the Cloud"><p>Doors open in</p><div class="countdown" id="countdown"><div><strong data-time="days">00</strong><span>days</span></div><b>:</b><div><strong data-time="hours">00</strong><span>hours</span></div><b>:</b><div><strong data-time="minutes">00</strong><span>mins</span></div><b>:</b><div><strong data-time="seconds">00</strong><span>secs</span></div></div><p class="countdown-place">The Observatory<br>Bengaluru</p></section>
