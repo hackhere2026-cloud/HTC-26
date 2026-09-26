@@ -10,6 +10,8 @@ New animation effects respect reduced motion, including a preference change duri
 
 ## Cinematic opening
 
+The cloud-drive scene fills the viewport. The car approaches from a dark cloud opening over 3.8 seconds and the event name reveals directly on the windshield near the end. Event information follows beneath the scene. Reduced-motion users see the settled scene and title immediately.
+
 The hero and eye-tracking playground are now one opening section. The visual direction borrows cinematic title timing and layered composition from game trailers, without copying GTA artwork, logos, or code. The original purple, teal, cream, and cyan tokens remain unchanged.
 
 Title masks, a code-symbol backdrop, staggered cards, hover light sweeps, timeline accents, and accordion entrances extend across the event sections. The character has been removed. The illustrated car approaches through parting cloud mist with a CSS perspective/scale entrance, then stays fixed. Two canvas headlight cones follow mouse movement, captured touch dragging, or arrow-key input inside the scene. Reset lights and replay controls are provided. Mobile scrolling remains available outside the bounded interaction area. Reduced motion skips the approach and cloud animation. This is layered 2.5D artwork, not a WebGL car model.

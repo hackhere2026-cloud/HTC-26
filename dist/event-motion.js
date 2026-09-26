@@ -33,7 +33,7 @@
 
   // Observe the existing reveal lifecycle so headings enter after the intro.
   const pending = new Set();
-  document.querySelectorAll('main h1, main h2').forEach(heading => {
+  document.querySelectorAll('main h1:not(.windshield-title), main h2').forEach(heading => {
     if (reduced.matches) return;
     const textNodes = [];
     const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);

@@ -263,3 +263,39 @@ html:not(.booting) .cloud-car { animation:car-arrive 1.35s cubic-bezier(.16,1,.3
 @keyframes cloud-part-right { 0%,15% { transform:translateX(-60%); opacity:1; } 100% { transform:none; opacity:.5; } }
 @media(max-width:760px) { .hero .cursor-showcase .drive-stage { height:390px; } .hero::after { font-size:150px; } .hero .showcase-caption { font-size:10px; } }
 @media(prefers-reduced-motion:reduce) { .arriving .car-rig,.arriving .cloud-bank { animation:none; } }
+
+/* Full-screen approach: the clouds form a dark opening around the vehicle. */
+.hero { width:100%; max-width:none; display:flex; flex-direction:column; padding:0 0 60px; gap:0; }
+.hero::before,.hero::after { display:none; }
+.hero .cursor-showcase { order:0; width:100%; display:flex; flex-direction:column; }
+.hero .cursor-showcase .drive-stage { order:0; width:100%; max-width:none; height:100svh; min-height:620px; margin:0; border:0; border-radius:0; perspective:1000px; background:radial-gradient(ellipse at 50% 42%,var(--night-2) 8%,rgba(85,75,129,.55) 43%,var(--night) 80%); }
+.hero .hero-copy { order:1; width:min(1180px,calc(100% - 40px)); display:grid; grid-template-columns:1fr 1fr; gap:16px 40px; padding-top:60px; }
+.hero .hero-copy .event-chip { grid-column:1/-1; justify-self:start; }
+.hero .hero-tagline { margin:0; font-size:clamp(22px,3vw,36px); }
+.hero .hero-intro { margin:0; }
+.hero .hero-meta { margin:0; }
+.hero .hero-actions { margin:0; }
+.hero .dreamer-instructions { order:1; width:min(1180px,calc(100% - 40px)); margin:16px auto 0; }
+.hero .showcase-footer { order:2; width:min(1180px,calc(100% - 40px)); margin:0 auto; }
+.drive-stage .car-rig { width:min(96%,1250px); left:50%; top:53%; aspect-ratio:1672/941; transform:translate(-50%,-50%); container-type:inline-size; }
+.hero h1.windshield-title { position:absolute; left:34%; top:20%; width:36%; margin:0; max-width:none; font:800 4.5cqw/.85 Arial,sans-serif; letter-spacing:-.055em; text-align:center; text-transform:uppercase; color:var(--cream); transform:rotate(-6deg) skewX(-13deg); text-shadow:0 0 8px rgba(110,231,255,.6),0 2px 2px var(--night-2); pointer-events:none; }
+.windshield-title span,.windshield-title strong { display:block; }
+.windshield-title strong { color:var(--cyan); font-size:1.15em; }
+.hero .showcase-label { top:105px; left:5%; right:5%; font-size:12px; }
+.hero .showcase-caption { bottom:35px; font-size:12px; letter-spacing:.3em; }
+.drive-stage .cloud-bank { width:85%; height:90%; top:0; filter:blur(22px); }
+.drive-stage .cloud-back { left:8%; opacity:.8; }
+.drive-stage .cloud-left { left:-48%; opacity:.85; }
+.drive-stage .cloud-right { right:-48%; opacity:.85; }
+.arriving .car-rig { animation:screen-approach 3.8s cubic-bezier(.18,.55,.16,1) both; }
+.arriving .cloud-left { animation:cave-open-left 3.8s ease both; }
+.arriving .cloud-right { animation:cave-open-right 3.8s ease both; }
+.arriving .windshield-title { animation:windshield-boot 1.15s 2.65s both; }
+@keyframes screen-approach { 0% { transform:translate(-50%,-68%) scale(.08); opacity:0; filter:blur(6px); } 20% { opacity:.5; } 65% { opacity:1; filter:blur(0); } 87% { transform:translate(-50%,-49%) scale(1.035); } 100% { transform:translate(-50%,-50%) scale(1); opacity:1; filter:none; } }
+@keyframes cave-open-left { 0%,18% { transform:translateX(57%); opacity:1; } 100% { transform:none; opacity:.85; } }
+@keyframes cave-open-right { 0%,18% { transform:translateX(-57%); opacity:1; } 100% { transform:none; opacity:.85; } }
+@keyframes windshield-boot { 0% { opacity:0; clip-path:inset(0 100% 0 0); filter:blur(4px); } 35% { opacity:1; } 100% { opacity:1; clip-path:inset(0); filter:none; } }
+@media(max-width:760px) { .hero .cursor-showcase .drive-stage { min-height:540px; } .drive-stage .car-rig { width:118%; max-width:none; top:52%; } .hero .hero-copy { grid-template-columns:1fr; padding-top:35px; } .hero .hero-copy .event-chip { grid-column:auto; } .hero .hero-meta { margin-top:12px; } .hero .hero-actions { margin-top:12px; } .hero .showcase-label { top:88px; font-size:10px; } .hero .showcase-caption { font-size:10px; letter-spacing:.15em; } .hero .dreamer-instructions { padding:0; } }
+@media(prefers-reduced-motion:reduce) { .arriving .car-rig,.arriving .cloud-bank,.arriving .windshield-title { animation:none; } }
+.scene-exit { position:absolute; z-index:8; bottom:25px; right:5%; padding:12px 18px; border:1px solid var(--line); background:var(--night-2); border-radius:4px; color:var(--cream); font-size:14px; }
+@media(max-width:760px) { .hero .showcase-caption { bottom:86px; } .scene-exit { bottom:24px; right:50%; transform:translateX(50%); white-space:nowrap; } }

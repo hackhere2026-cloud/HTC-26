@@ -143,7 +143,7 @@
     document.getElementById('dreamerStatus').textContent = 'SYSTEM READY';
   }
   heroStage.addEventListener('pointermove', moveInSky);
-  heroStage.addEventListener('pointerdown', event => { heroStage.setPointerCapture(event.pointerId); moveInSky(event); });
+  heroStage.addEventListener('pointerdown', event => { if (event.target.closest('a,button')) return; heroStage.setPointerCapture(event.pointerId); moveInSky(event); });
   heroStage.addEventListener('pointerleave', resetDreamer);
   heroStage.addEventListener('pointerup', resetDreamer);
   heroStage.addEventListener('pointercancel', resetDreamer);
@@ -164,7 +164,7 @@
     void heroStage.offsetWidth;
     if (!reduceMotion) heroStage.classList.add('arriving');
     drawBeams();
-    arrivalTimer = setTimeout(() => { heroStage.classList.remove('arriving'); resetDreamer(); }, reduceMotion ? 0 : 2800);
+    arrivalTimer = setTimeout(() => { heroStage.classList.remove('arriving'); resetDreamer(); }, reduceMotion ? 0 : 3800);
   }
   document.getElementById('replayDrive').addEventListener('click', replayArrival);
   const arrivalObserver = new IntersectionObserver(entries => {
