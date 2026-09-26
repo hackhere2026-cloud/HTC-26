@@ -10,11 +10,21 @@
   line.setAttribute('aria-hidden', 'true');
   document.body.append(line);
   let scheduled = false;
+  const scenes = [...document.querySelectorAll('main > section')];
   function updateScroll() {
     scheduled = false;
     const travel = document.documentElement.scrollHeight - innerHeight;
     document.documentElement.style.setProperty('--reading', travel > 0 ? Math.min(1, scrollY / travel) : 0);
     dock.hidden = hero.getBoundingClientRect().bottom > 90 || footer.getBoundingClientRect().top < innerHeight;
+    if (!reduced.matches) {
+      hero.style.setProperty('--hero-drift', `${Math.min(scrollY * .16, 100)}px`);
+      hero.style.setProperty('--car-drift', `${-Math.min(scrollY * .035, 24)}px`);
+      scenes.forEach(scene => {
+        const bounds = scene.getBoundingClientRect();
+        if (bounds.bottom < 0 || bounds.top > innerHeight) return;
+        scene.style.setProperty('--scene-progress', Math.min(1, Math.max(.2, (innerHeight - bounds.top) / (innerHeight * .6))));
+      });
+    }
   }
   addEventListener('scroll', () => {
     if (!scheduled) { scheduled = true; requestAnimationFrame(updateScroll); }
@@ -54,9 +64,9 @@
       if (reduced.matches) return;
       heading.querySelectorAll('.motion-word').forEach((word, i) => {
         const animation = word.animate([
-          { transform: 'translateY(110%) rotate(4deg)', opacity: 0 },
-          { transform: 'translateY(0) rotate(0)', opacity: 1 }
-        ], { duration: 750, delay: i * 65, easing: 'cubic-bezier(.2,.75,.2,1)', fill: 'backwards' });
+          { transform: 'translateY(115%) skewY(8deg) scale(1.12)', opacity: 0 },
+          { transform: 'translateY(0) skewY(0) scale(1)', opacity: 1 }
+        ], { duration: 950, delay: i * 85, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
         animations.add(animation);
         animation.onfinish = () => animations.delete(animation);
       });
