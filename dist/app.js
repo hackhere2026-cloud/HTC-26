@@ -91,17 +91,39 @@
   const destination = { x: 0, y: 0 };
   const position = { x: 0, y: 0 };
   let skyFrame = 0;
+  const beamCanvas = document.getElementById('headlightCanvas');
+  const beamContext = beamCanvas.getContext('2d');
+  function drawBeams() {
+    const box = heroStage.getBoundingClientRect();
+    const car = heroCharacter.getBoundingClientRect();
+    const ratio = Math.min(devicePixelRatio || 1, 2);
+    if (beamCanvas.width !== Math.round(box.width * ratio) || beamCanvas.height !== Math.round(box.height * ratio)) {
+      beamCanvas.width = Math.round(box.width * ratio); beamCanvas.height = Math.round(box.height * ratio);
+    }
+    beamContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+    beamContext.clearRect(0, 0, box.width, box.height);
+    if (heroStage.classList.contains('arriving')) return;
+    const tx = box.width / 2 + position.x, ty = box.height / 2 + position.y;
+    [[.043,.52],[.318,.54]].forEach(([x,y]) => {
+      const ox=car.left-box.left+car.width*x, oy=car.top-box.top+car.height*y;
+      const angle=Math.atan2(ty-oy,tx-ox), spread=24;
+      const px=-Math.sin(angle)*spread, py=Math.cos(angle)*spread;
+      const gradient=beamContext.createLinearGradient(ox,oy,tx,ty);
+      gradient.addColorStop(0,'rgba(110,231,255,.48)'); gradient.addColorStop(1,'rgba(110,231,255,0)');
+      beamContext.fillStyle=gradient; beamContext.beginPath(); beamContext.moveTo(ox,oy); beamContext.lineTo(tx+px,ty+py); beamContext.lineTo(tx-px,ty-py); beamContext.closePath(); beamContext.fill();
+      beamContext.fillStyle='#baf5ff'; beamContext.shadowColor='#6ee7ff'; beamContext.shadowBlur=14; beamContext.beginPath(); beamContext.arc(ox,oy,2.5,0,Math.PI*2); beamContext.fill(); beamContext.shadowBlur=0;
+    });
+  }
   function renderDreamer() {
     position.x += (destination.x - position.x) * (reduceMotion ? 1 : .12);
     position.y += (destination.y - position.y) * (reduceMotion ? 1 : .12);
-    heroCharacter.style.setProperty('--eye-x', `${position.x}px`);
-    heroCharacter.style.setProperty('--eye-y', `${position.y}px`);
+    drawBeams();
     if (Math.abs(destination.x - position.x) + Math.abs(destination.y - position.y) > .1) skyFrame = requestAnimationFrame(renderDreamer);
     else skyFrame = 0;
   }
   function guideDreamer(x, y) {
-    const maxX = heroCharacter.offsetWidth * .012;
-    const maxY = heroCharacter.offsetHeight * .005;
+    const maxX = heroStage.clientWidth / 2 - 12;
+    const maxY = heroStage.clientHeight / 2 - 12;
     destination.x = Math.max(-maxX, Math.min(maxX, x));
     destination.y = Math.max(-maxY, Math.min(maxY, y));
     if (!skyFrame) skyFrame = requestAnimationFrame(renderDreamer);
@@ -111,14 +133,14 @@
     const box = heroStage.getBoundingClientRect();
     const nx = Math.max(-1, Math.min(1, (event.clientX - box.left - box.width / 2) / (box.width / 2)));
     const ny = Math.max(-1, Math.min(1, (event.clientY - box.top - box.height / 2) / (box.height / 2)));
-    guideDreamer(nx * heroCharacter.offsetWidth * .012, ny * heroCharacter.offsetHeight * .005);
+    guideDreamer(nx * box.width / 2, ny * box.height / 2);
     heroStage.classList.add('is-exploring');
-    document.getElementById('dreamerStatus').textContent = 'Eyes on you';
+    document.getElementById('dreamerStatus').textContent = 'TARGET LOCKED';
   }
   function resetDreamer() {
-    guideDreamer(0, 0);
+    guideDreamer(-heroStage.clientWidth * .22, heroStage.clientHeight * .26);
     heroStage.classList.remove('is-exploring');
-    document.getElementById('dreamerStatus').textContent = 'Ready to explore';
+    document.getElementById('dreamerStatus').textContent = 'SYSTEM READY';
   }
   heroStage.addEventListener('pointermove', moveInSky);
   heroStage.addEventListener('pointerdown', event => { heroStage.setPointerCapture(event.pointerId); moveInSky(event); });
@@ -127,7 +149,7 @@
   heroStage.addEventListener('pointercancel', resetDreamer);
   heroStage.addEventListener('blur', resetDreamer);
   heroStage.addEventListener('keydown', event => {
-    const moves = { ArrowLeft: [-2, 0], ArrowRight: [2, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+    const moves = { ArrowLeft: [-25, 0], ArrowRight: [25, 0], ArrowUp: [0, -25], ArrowDown: [0, 25] };
     if (event.key === 'Escape') resetDreamer();
     if (!moves[event.key]) return;
     event.preventDefault();
@@ -135,6 +157,25 @@
   });
   document.getElementById('resetDreamer').addEventListener('click', resetDreamer);
   window.addEventListener('resize', resetDreamer, { passive: true });
+  let arrivalTimer;
+  function replayArrival() {
+    clearTimeout(arrivalTimer);
+    heroStage.classList.remove('arriving');
+    void heroStage.offsetWidth;
+    if (!reduceMotion) heroStage.classList.add('arriving');
+    drawBeams();
+    arrivalTimer = setTimeout(() => { heroStage.classList.remove('arriving'); resetDreamer(); }, reduceMotion ? 0 : 2800);
+  }
+  document.getElementById('replayDrive').addEventListener('click', replayArrival);
+  const arrivalObserver = new IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting) && !document.documentElement.classList.contains('booting')) { replayArrival(); arrivalObserver.disconnect(); }
+  }, {threshold:.25});
+  const bootObserver = new MutationObserver(() => {
+    if (!document.documentElement.classList.contains('booting')) { arrivalObserver.observe(heroStage); bootObserver.disconnect(); }
+  });
+  bootObserver.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  if (!document.documentElement.classList.contains('booting')) arrivalObserver.observe(heroStage);
+  resetDreamer();
 
   function animateCursor() {
     follower.x += (pointer.x - follower.x) * .18;

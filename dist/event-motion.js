@@ -18,7 +18,6 @@
     dock.hidden = hero.getBoundingClientRect().bottom > 90 || footer.getBoundingClientRect().top < innerHeight;
     if (!reduced.matches) {
       hero.style.setProperty('--hero-drift', `${Math.min(scrollY * .16, 100)}px`);
-      hero.style.setProperty('--car-drift', `${-Math.min(scrollY * .035, 24)}px`);
       scenes.forEach(scene => {
         const bounds = scene.getBoundingClientRect();
         if (bounds.bottom < 0 || bounds.top > innerHeight) return;
