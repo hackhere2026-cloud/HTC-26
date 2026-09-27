@@ -1,0 +1,26 @@
+/* Real-time WebGL scene and windshield-to-page transition. */
+#drive3d { position:absolute; inset:0; z-index:2; }
+#drive3d canvas { display:block; width:100%; height:100%; }
+.has-3d .car-rig,.has-3d .tech-grid,.has-3d #headlightCanvas { display:none; }
+.drive-stage .cloud-back { display:none; }
+.drive-stage .cloud-bank { z-index:3; opacity:var(--mist-opacity,.8); transition:opacity .4s; }
+.drive-stage .cloud-left { transform:translateX(calc(40% - var(--cloud-shift,0%))); }
+.drive-stage .cloud-right { transform:translateX(calc(-40% + var(--cloud-shift,0%))); }
+.windshield-screen { position:absolute; z-index:6; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:100px 24px 70px; text-align:center; background:radial-gradient(ellipse at 50% 25%,rgba(85,75,129,.38),transparent 65%),#141923; color:var(--cream); opacity:var(--glass-opacity,0); transform:scale(var(--glass-scale,1.07)); pointer-events:none; }
+.windshield-screen::before { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(115deg,transparent 30%,rgba(110,231,255,.055) 49%,transparent 62%); }
+.inside-windshield .windshield-screen,.drive-fallback .windshield-screen { pointer-events:auto; }
+.hero .cursor-showcase .inside-windshield { touch-action:pan-y; cursor:auto; }
+.hero .windshield-screen h1 { width:100%; max-width:none; font-size:clamp(64px,min(12vw,20svh),170px); transform:none; line-height:.94; margin:26px 0; color:var(--cream); letter-spacing:-.07em; flex-shrink:0; }
+.hero .windshield-screen h1 > span,.hero .windshield-screen h1 > em { display:block; }
+.hero .windshield-screen h1 > span { word-spacing:.12em; }
+.hero .windshield-screen h1 em { color:var(--cyan); text-shadow:0 0 65px rgba(110,231,255,.15); }
+.windshield-screen p { font-size:clamp(16px,2vw,22px); color:var(--muted); margin:12px 0 30px; }
+.glass-eyebrow { font:12px 'DM Mono',monospace; letter-spacing:.2em; color:var(--cyan); }
+.inside-windshield .scene-exit,.inside-windshield .showcase-caption { opacity:0; pointer-events:none; }
+.showcase-label { pointer-events:none; }
+.hero .showcase-footer { flex-wrap:wrap; justify-content:flex-start; gap:24px; }
+.model-credit { margin-left:auto; color:var(--muted); font-size:12px; }
+.drive-fallback #drive3d,.drive-fallback .car-rig { display:none; }
+.hero .showcase-footer button:disabled { opacity:.45; cursor:default; }
+.hero .showcase-footer .text-link { min-height:44px; }
+@media(max-width:760px) { .hero .windshield-screen h1 { font-size:clamp(4rem,18vw,7rem); } .glass-eyebrow { font-size:10px; letter-spacing:.1em; } .hero .showcase-footer { gap:14px; } }

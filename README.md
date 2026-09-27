@@ -1,35 +1,34 @@
 # Hack the Cloud
 
-A responsive, animated 24-hour hackathon frontend built with HTML, CSS, JavaScript, and Canvas.
+Includes a themed animated loading intro, skip control, reduced-motion support, and an automatic timeout fallback.
 
-Features include a cloud-themed loading screen, skip intro, cursor-following character, star field, 3D card tilt, scroll reveals, countdown, event timeline, tracks, prizes, FAQ, and registration modal.
+An interactive 24-hour hackathon website with a real-time 3D cloud-drive opening, pointer-controlled headlights, canvas star field, card tilt, scroll reveals, countdown, schedule, tracks, prizes, FAQ, and a demo registration flow.
 
 ## Run locally
 
-From this repository's root:
+The built site is included in `dist`. To preview it without installing anything:
 
 ```bash
 python3 -m http.server 8080 --directory dist
 ```
 
-Open http://localhost:8080. No package installation or build step is required.
+Then open `http://localhost:8080`.
 
-## Files
+To edit the 3D scene, use Node.js 20 or newer:
 
-- `dist/index.html`: page content and loading-screen markup.
-- `dist/styles.css`: responsive layout and main animations.
-- `dist/loader.css`: loading-screen theme and animations.
-- `dist/event-layout.css`: Quantexa-inspired structure, using the unchanged theme tokens.
-- `dist/event-motion.js`: word reveals, event dock, and reading progress.
-- `dist/app.js`: interactions, countdown, and loading lifecycle.
-- `dist/assets/dream-coder.png`: cloud character artwork.
+```bash
+npm ci
+npm run build
+npm start
+```
 
-## Customization and launch
+Open `http://localhost:4173`. The editable scene is `src/drive3d.js`; the build bundles Three.js into `dist/drive3d.js`. The car model and Draco decoder are served locally, so rendering does not depend on a third-party CDN.
 
-Edit event details in `dist/index.html` and the countdown date in `dist/app.js`.
-Dates, venue, prizes, judges, contact details, and social links currently contain sample content.
-The registration modal is a frontend demo: it does not save registrations or send emails, despite its current success copy. Connect a registration service and update that copy before accepting real applications.
+## Opening controls
 
-Serve the contents of `dist/` from any static web host. Motion is reduced for visitors who request reduced motion in their system settings.
+- **Replay drive** restarts the 12-second approach and windshield takeover.
+- **Explore car** pauses on the car. Move a mouse, drag on the scene, or focus the scene and use arrow keys to aim the headlights.
+- **Enter windshield** starts the final camera push. **Explore event** skips directly to event information.
+- Reduced-motion preferences skip to the event title. If WebGL fails, the same title and event links remain available. Mobile scrolling works outside the interactive scene.
 
-See [ANIMATION-NOTES.md](ANIMATION-NOTES.md) for layout references and Codrops motion inspiration.
+The event details and people are sample content. Registration is a front-end demo and does not submit applications. Connect a real registration service and replace the placeholder facts/social links before promoting the event. Third-party 3D credits and license notices are linked from the scene.
