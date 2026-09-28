@@ -6,6 +6,7 @@ await mkdir('dist/server',{recursive:true});
 await mkdir('dist/.openai',{recursive:true});
 await cp('public','dist/client',{recursive:true});
 await build({entryPoints:['src/drive3d.js'],bundle:true,format:'esm',minify:true,outfile:'dist/client/drive3d.js'});
+await cp('dist/client/drive3d.js','public/drive3d.js');
 await build({entryPoints:['server/index.js'],bundle:true,format:'esm',platform:'browser',outfile:'dist/server/index.js'});
 await writeFile('dist/.openai/hosting.json',JSON.stringify(hosting,null,2)+'\n');
 await cp('drizzle','dist/.openai/drizzle',{recursive:true});
