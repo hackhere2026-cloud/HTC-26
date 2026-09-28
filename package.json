@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild src/drive3d.js --bundle --format=esm --minify --outfile=dist/drive3d.js",
-    "start": "python3 -m http.server 4173 --directory dist"
+    "build": "node scripts/build.mjs",
+    "start": "wrangler dev --config dist/server/wrangler.json --ip 127.0.0.1 --port 4173 --persist-to .wrangler/state",
+    "db:generate": "drizzle-kit generate",
+    "test": "node --test tests/registration.test.mjs"
   },
-  "dependencies": { "three": "0.186.1" },
-  "devDependencies": { "esbuild": "0.28.2" }
+  "dependencies": { "three": "0.186.1", "drizzle-orm": "0.45.3" },
+  "devDependencies": { "esbuild": "0.28.2", "drizzle-kit": "0.31.11", "wrangler": "4.141.0" }
 }

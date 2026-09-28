@@ -1,88 +1,57 @@
 (() => {
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const loader = document.getElementById('cloudLoader');
-  const started = performance.now();
   let bootFinished = false;
-  let bootProgress = 0;
-  let assetsReady = document.readyState === 'complete';
-  window.addEventListener('load', () => { assetsReady = true; }, { once: true });
-  function finishBoot() {
+  let loaderExit;
+  const introSurfaces = [...document.querySelectorAll('.site-header, main, .site-footer, #eventDock')];
+  function finishBoot(skipped = false) {
     if (bootFinished) return;
     bootFinished = true;
     clearTimeout(window.cloudBootFallback);
     document.documentElement.classList.remove('booting');
     document.getElementById('loaderBar').style.width = '100%';
     document.getElementById('loaderPercent').textContent = '100%';
-    document.getElementById('loaderStatus').textContent = 'Ready to build';
+    document.getElementById('loaderStatus').textContent = 'WELCOME TO HACK THE CLOUD';
+    introSurfaces.forEach(element => element.inert = false);
     loader.classList.add('loader-out');
     setupReveals();
     const restoreFocus = loader.contains(document.activeElement);
-    setTimeout(() => {
-      loader.remove();
+    loaderExit = setTimeout(() => {
+      loader.hidden = true;
       if (restoreFocus) document.querySelector('.site-header .logo').focus();
-    }, reduceMotion ? 0 : 700);
+    }, reduceMotion ? 0 : 650);
+    if (skipped) document.dispatchEvent(new CustomEvent('cloud:skip-intro'));
   }
-  document.getElementById('loaderSkip').addEventListener('click', finishBoot);
-  function bootFrame(now) {
-    if (bootFinished) return;
-    const elapsed = now - started;
-    bootProgress = Math.max(bootProgress, Math.min(92, elapsed / 26));
-    document.getElementById('loaderBar').style.width = bootProgress + '%';
-    document.getElementById('loaderPercent').textContent = String(Math.floor(bootProgress)).padStart(2, '0') + '%';
-    const status = bootProgress < 35 ? 'Gathering the clouds' : bootProgress < 72 ? 'Connecting the dreamers' : 'Preparing for takeoff';
+  function beginBoot() {
+    clearTimeout(loaderExit);bootFinished = false;loader.hidden = false;loader.classList.remove('loader-out');
+    document.documentElement.classList.add('booting');
+    introSurfaces.forEach(element => {element.inert = true;element.dataset.introInert = '';});
+    document.getElementById('loaderBar').style.width = '0%';
+    document.getElementById('loaderPercent').textContent = '00%';
+    clearTimeout(window.cloudBootFallback);
+    window.cloudBootFallback = setTimeout(() => finishBoot(true),35000);
+    document.getElementById('loaderSkip').focus({preventScroll:true});
+    if (reduceMotion) queueMicrotask(() => finishBoot(true));
+  }
+  document.getElementById('loaderSkip').addEventListener('click', () => finishBoot(true));
+  document.addEventListener('cloud:intro-complete', () => finishBoot());
+  document.addEventListener('cloud:intro-failed', () => finishBoot(true));
+  document.addEventListener('cloud:replay-intro', beginBoot);
+  document.addEventListener('cloud:intro-progress', event => {
+    if(bootFinished)return;
+    const percent=Math.floor(event.detail.progress*100);
+    document.getElementById('loaderBar').style.width = `${percent}%`;
+    document.getElementById('loaderPercent').textContent = `${String(percent).padStart(2,'0')}%`;
     const label = document.getElementById('loaderStatus');
-    if (label.textContent !== status) label.textContent = status;
-    if ((assetsReady && elapsed > (reduceMotion ? 0 : 2600)) || elapsed > 5000) finishBoot();
-    else requestAnimationFrame(bootFrame);
-  }
-  requestAnimationFrame(bootFrame);
+    if(label.textContent!==event.detail.label)label.textContent=event.detail.label;
+  });
+  loader.addEventListener('keydown',event=>{if(event.key==='Escape')finishBoot(true);});
+  beginBoot();
   const finePointer = matchMedia('(pointer: fine)').matches;
   const root = document.documentElement;
   const header = document.querySelector('.site-header');
-  const heroStage = document.getElementById('heroStage');
-  const heroCharacter = document.getElementById('heroCharacter');
-  const canvas = document.getElementById('sky');
-  const ctx = canvas.getContext('2d');
-  let pointer = { x: innerWidth / 2, y: innerHeight / 2 };
-  let follower = { ...pointer };
-  let stars = [];
-  let width = innerWidth;
-  let height = innerHeight;
-  let dpr = Math.min(devicePixelRatio || 1, 2);
-
-  function resizeSky() {
-    width = innerWidth;
-    height = innerHeight;
-    dpr = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const count = Math.min(125, Math.round((width * height) / 12000));
-    stars = Array.from({ length: count }, (_, i) => ({ x: Math.random() * width, y: Math.random() * height, r: Math.random() * 1.45 + .25, a: Math.random() * .7 + .15, pulse: Math.random() * Math.PI * 2, depth: .15 + Math.random() * .8, cyan: i % 7 === 0 }));
-  }
-
-  function drawSky(time = 0) {
-    ctx.clearRect(0, 0, width, height);
-    const dx = (pointer.x / width - .5) * 20;
-    const dy = (pointer.y / height - .5) * 12;
-    stars.forEach(star => {
-      const alpha = star.a * (.72 + Math.sin(time * .001 + star.pulse) * .28);
-      ctx.fillStyle = star.cyan ? `rgba(110,231,255,${alpha})` : `rgba(255,253,245,${alpha})`;
-      ctx.shadowBlur = star.cyan ? 8 : 4;
-      ctx.shadowColor = star.cyan ? '#6ee7ff' : '#fffdf5';
-      ctx.beginPath();
-      ctx.arc(star.x + dx * star.depth, star.y + dy * star.depth, star.r, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.shadowBlur = 0;
-    requestAnimationFrame(drawSky);
-  }
 
   function onPointerMove(event) {
-    pointer.x = event.clientX;
-    pointer.y = event.clientY;
     document.body.classList.add('cursor-live');
     root.style.setProperty('--mx', ((event.clientX / innerWidth) - .5).toFixed(3));
     root.style.setProperty('--my', ((event.clientY / innerHeight) - .5).toFixed(3));
@@ -105,9 +74,11 @@
         const box = card.getBoundingClientRect();
         const x = (event.clientX - box.left) / box.width - .5;
         const y = (event.clientY - box.top) / box.height - .5;
+        card.style.setProperty('--shine-x', `${(x+.5)*100}%`);
+        card.style.setProperty('--shine-y', `${(y+.5)*100}%`);
         card.style.transform = `perspective(900px) rotateX(${-y * 8}deg) rotateY(${x * 10}deg) translateY(-4px)`;
       });
-      card.addEventListener('pointerleave', () => card.style.transform = '');
+      card.addEventListener('pointerleave', () => {card.style.transform = '';card.style.removeProperty('--shine-x');card.style.removeProperty('--shine-y');});
     });
   }
 
@@ -134,16 +105,14 @@
 
   const dialog = document.getElementById('registerDialog');
   const form = document.getElementById('registerForm');
-  document.querySelectorAll('[data-open-register]').forEach(button => button.addEventListener('click', () => dialog.showModal()));
+  document.querySelectorAll('[data-open-register]').forEach(button => button.addEventListener('click', () => {
+    form.hidden = false;dialog.querySelector('.dialog-copy').hidden = false;dialog.querySelector('.form-success').hidden = true;
+    dialog.showModal();
+  }));
   document.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
   document.querySelector('[data-close-register]').addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    form.hidden = true;
-    dialog.querySelector('.dialog-copy').hidden = true;
-    dialog.querySelector('.form-success').hidden = false;
-  });
+  // Registration is submitted to the site's server by interactions.js.
 
   document.querySelectorAll('a, button, summary, input, select').forEach(item => {
     item.addEventListener('pointerenter', () => document.body.classList.add('cursor-hover'));
@@ -152,6 +121,5 @@
   window.addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 24), { passive: true });
   window.addEventListener('pointermove', onPointerMove, { passive: true });
   window.addEventListener('pointerdown', onPointerMove, { passive: true });
-  window.addEventListener('resize', resizeSky, { passive: true });
-  resizeSky(); drawSky(); setupTilt(); setupMagnetic(); updateCountdown(); setInterval(updateCountdown, 1000);
+  setupTilt(); setupMagnetic(); updateCountdown(); setInterval(updateCountdown, 1000);
 })();

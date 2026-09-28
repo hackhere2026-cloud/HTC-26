@@ -1,0 +1,27 @@
+/* The real 3D scene is the loader. This layer contains only its controls. */
+.cloud-loader { display:none; }
+.booting { overflow:hidden; }
+.booting .site-header,.booting main,.booting .site-footer,.booting .event-dock { visibility:hidden; }
+.booting #heroStage,.booting #heroStage * { visibility:visible; }
+.booting #heroStage .scene-exit,.booting #heroStage .showcase-caption,.booting #heroStage .windshield-screen a { visibility:hidden; }
+.booting #heroStage .showcase-label { top:76px; }
+.booting #heroStage .car-rig { visibility:hidden; }
+.booting #heroStage .car-rig * { visibility:hidden; }
+.booting .cloud-loader,.cloud-loader.loader-out { display:block; position:fixed; inset:0; z-index:1000; color:var(--cream); pointer-events:none; opacity:1; transition:opacity .65s ease; }
+.cloud-loader[hidden] { display:none!important; }
+.cloud-loader.loader-out { opacity:0; }
+.intro-brand { position:absolute; left:5%; top:30px; color:var(--cream); font:12px 'DM Mono',monospace; letter-spacing:.14em; }
+.loader-console { position:absolute; bottom:max(32px,env(safe-area-inset-bottom)); left:5%; right:5%; max-width:540px; margin:auto; padding:18px 22px 10px; background:rgba(20,18,32,.8); border:1px solid var(--line); border-radius:8px; backdrop-filter:blur(18px); }
+.loader-caption,.loader-bottom { display:flex; justify-content:space-between; align-items:center; gap:15px; font:12px/1.5 'DM Mono',monospace; color:var(--muted); }
+#loaderStatus { color:var(--cream); }
+#loaderPercent { color:var(--cyan); font-variant-numeric:tabular-nums; }
+.loader-meter { height:2px; margin:15px 0 6px; background:rgba(255,253,245,.13); overflow:hidden; }
+.loader-meter span { display:block; width:0; height:100%; background:linear-gradient(90deg,var(--violet),var(--cyan)); box-shadow:0 0 20px var(--cyan); transition:width .2s linear; }
+.loader-bottom { font-size:10px; letter-spacing:.1em; }
+.loader-skip { min-height:44px; padding:8px 0 8px 12px; border:0; background:none; color:var(--cream); cursor:pointer; pointer-events:auto; font:13px 'DM Mono',monospace; }
+.loader-skip:hover { color:var(--cyan); }
+.loader-skip:focus-visible { outline:2px solid var(--cyan); outline-offset:4px; }
+.logo { letter-spacing:.07em; }
+.logo-mark { font-size:.7rem; flex-shrink:0; }
+@media(max-width:420px) { .site-header .logo{gap:7px;font-size:.61rem} .loader-console{bottom:20px;padding:14px 16px 6px} .intro-brand{font-size:11px} .loader-caption{font-size:11px} }
+@media(prefers-reduced-motion:reduce) { .cloud-loader{transition:none!important} }

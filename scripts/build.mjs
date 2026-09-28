@@ -1,0 +1,13 @@
+import {build} from 'esbuild';
+import {cp,mkdir,readFile,writeFile} from 'node:fs/promises';
+const hosting=JSON.parse(await readFile('.openai/hosting.json','utf8'));
+await mkdir('dist/client',{recursive:true});
+await mkdir('dist/server',{recursive:true});
+await mkdir('dist/.openai',{recursive:true});
+await cp('public','dist/client',{recursive:true});
+await build({entryPoints:['src/drive3d.js'],bundle:true,format:'esm',minify:true,outfile:'dist/client/drive3d.js'});
+await build({entryPoints:['server/index.js'],bundle:true,format:'esm',platform:'browser',outfile:'dist/server/index.js'});
+await writeFile('dist/.openai/hosting.json',JSON.stringify(hosting,null,2)+'\n');
+await cp('drizzle','dist/.openai/drizzle',{recursive:true});
+await writeFile('dist/server/wrangler.json',JSON.stringify({name:'hack-the-cloud',main:'index.js',compatibility_date:'2026-09-01',assets:{directory:'../client',binding:'ASSETS',run_worker_first:['/api/*']},d1_databases:[{binding:hosting.d1,database_name:'hack-the-cloud-local',database_id:'00000000-0000-4000-8000-000000000000'}]},null,2)+'\n');
+console.log('Built the 3D frontend and registration Worker.');

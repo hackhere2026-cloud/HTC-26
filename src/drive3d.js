@@ -11,10 +11,14 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const replay = document.getElementById('replayDrive');
 const explore = document.getElementById('resetDreamer');
 const enter = document.getElementById('enterWindshield');
-const duration = 12;
+const wiperToggle = document.getElementById('toggleWipers');
+const duration = 17;
 let renderer, ready = false, playing = false, visible = false, elapsed = 0, last = 0;
+let introSkipped = false, notified = false, lastProgress = -1, titleSource, titleCanvas, titleContext, titleMap, lastTitleProgress = -1;
 let car, titlePlane, shadow, environment, loadedScene;
 const wheels = [], headlights = [], cones = [], lightPools = [], mist = [];
+const wipers = [];
+let wipersEnabled = true, motionTime = 0, logoImage;
 const pointer = new THREE.Vector2(0, 0);
 const smoothPointer = new THREE.Vector2();
 const scene = new THREE.Scene();
@@ -32,6 +36,7 @@ function setScreen(amount) {
   glassScreen.inert = !shown;
   glassScreen.setAttribute('aria-hidden', String(!shown));
   stage.classList.toggle('inside-windshield', shown);
+  stage.classList.toggle('title-revealing', elapsed>=12.4 || introSkipped || reduced.matches);
   stage.dataset.phase = shown ? 'windshield' : elapsed > 7 ? 'close-up' : elapsed > 4 ? 'headlights' : 'driving';
 }
 
@@ -42,15 +47,47 @@ function fail(error) {
   status.textContent = 'STATIC VIEW · 3D UNAVAILABLE';
   setScreen(1);
   replay.disabled = true; explore.disabled = true; enter.disabled = true;
+  wiperToggle.disabled = true;
+  document.dispatchEvent(new CustomEvent('cloud:intro-failed'));
 }
 
 function labelTexture() {
   const canvas = document.createElement('canvas'); canvas.width = 1024; canvas.height = 512;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,1024,512);
-  ctx.textAlign='center'; ctx.font='900 115px Arial'; ctx.fillStyle='#fffdf5';
-  ctx.fillText('HACK THE',512,215); ctx.fillStyle='#6ee7ff'; ctx.font='900 145px Arial'; ctx.fillText('CLOUD',512,365);
-  const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace; return texture;
+  // Preserve the supplied artwork and its alpha channel: no rectangular backing.
+  const height=440, width=height*logoImage.naturalWidth/logoImage.naturalHeight;
+  ctx.drawImage(logoImage,(1024-width)/2,(512-height)/2,width,height);
+  titleSource=canvas;
+  titleCanvas=document.createElement('canvas');titleCanvas.width=1024;titleCanvas.height=512;titleContext=titleCanvas.getContext('2d');
+  titleMap=new THREE.CanvasTexture(titleCanvas);titleMap.colorSpace=THREE.SRGBColorSpace;return titleMap;
+}
+
+function makeWipers() {
+  // A local frame on the sloping windshield keeps both blades against the glass.
+  const frame=new THREE.Group();
+  frame.position.copy(titlePlane.position);frame.rotation.copy(titlePlane.rotation);
+  const metal=new THREE.MeshStandardMaterial({color:'#60777a',metalness:.85,roughness:.3});
+  const rubber=new THREE.MeshStandardMaterial({color:'#10121d',roughness:.78});
+  for(const x of [-.43,.18]) {
+    const pivot=new THREE.Group();pivot.position.set(x,-.25,.018);
+    const axle=new THREE.Mesh(new THREE.CylinderGeometry(.027,.027,.024,12),metal);
+    axle.rotation.x=Math.PI/2;pivot.add(axle);
+    const arm=new THREE.Mesh(new THREE.BoxGeometry(.015,.30,.018),metal);arm.position.y=.15;pivot.add(arm);
+    const blade=new THREE.Mesh(new THREE.BoxGeometry(.025,.31,.026),rubber);blade.position.set(0,.32,.014);pivot.add(blade);
+    const spine=new THREE.Mesh(new THREE.BoxGeometry(.008,.29,.006),metal);spine.position.set(0,.32,.03);pivot.add(spine);
+    frame.add(pivot);wipers.push(pivot);
+  }
+  car.add(frame);
+}
+
+function paintTitle(progress) {
+  if(Math.abs(progress-lastTitleProgress)<.012)return;
+  lastTitleProgress=progress;
+  titleContext.clearRect(0,0,1024,512);
+  titleContext.save();titleContext.beginPath();titleContext.rect(0,0,1024*progress,512);titleContext.clip();titleContext.drawImage(titleSource,0,0);titleContext.restore();
+  if(progress>0&&progress<1){titleContext.fillStyle='rgba(110,231,255,.35)';titleContext.fillRect(1024*progress-3,90,3,330);}
+  titleMap.needsUpdate=true;
 }
 
 function makeHeadlights() {
@@ -102,7 +139,7 @@ function buildWorld() {
 
 function start(at=0) {
   if (!ready) return;
-  elapsed = reduced.matches ? duration : at; playing=!reduced.matches; last=0;
+  elapsed = reduced.matches || introSkipped ? duration : at; playing=elapsed<duration; last=0;notified=false;lastProgress=-1;
   setScreen(reduced.matches ? 1 : 0);
   stage.classList.toggle('sequence-active',playing);
   renderer.setAnimationLoop(renderFrame);
@@ -121,7 +158,8 @@ function renderFrame(now) {
   const dt=last?Math.min((now-last)/1000,.05):0; last=now;
   if (!ready || !visible || document.hidden) return;
   if (playing) elapsed=Math.min(duration,elapsed+dt);
-  const approach=smooth(0,4.5,elapsed), orbit=smooth(4.5,7,elapsed), push=smooth(7,12,elapsed);
+  motionTime+=dt;
+  const approach=smooth(0,5,elapsed), orbit=smooth(5,7.5,elapsed), push=smooth(7.5,12.5,elapsed);
   const distance=lerp(15,0,approach);
   car.position.set(0,Math.sin(elapsed*17)*.008*(1-approach),distance);
   car.rotation.z=Math.sin(elapsed*3)*.004*(1-approach);
@@ -140,22 +178,28 @@ function renderFrame(now) {
     cones[i].lookAt(car.localToWorld(light.target.position.clone()));
     lightPools[i].position.set(smoothPointer.x*3+(i?.6:-.6),.012,-4.5-smoothPointer.y*2);
   });
-  titlePlane.material.opacity=smooth(4.7,6.4,elapsed);
+  titlePlane.material.opacity=smooth(4.8,6,elapsed);
+  paintTitle(!playing&&elapsed<duration?1:smooth(5,8.7,elapsed));
+  const wipe=wipersEnabled&&!reduced.matches?(1-Math.cos(motionTime*Math.PI*1.15))/2:0;
+  wipers.forEach(pivot=>{pivot.rotation.z=lerp(-1.15,.22,wipe);});
+  stage.dataset.wipers=wipersEnabled&&!reduced.matches?'running':'parked';
   mist.forEach((puff,i)=>{
     const base=puff.userData.base;
     puff.position.x=base.x+Math.sign(base.x)*approach*.7+Math.sin(elapsed*.35+i)*.25;
     puff.position.z=base.z-approach*3;
     puff.material.opacity=.26*(1-push*.8);
   });
-  const takeover=smooth(10.35,11.7,elapsed);
+  const takeover=smooth(11.7,13,elapsed);
   setScreen(takeover);
   stage.style.setProperty('--cloud-shift',`${approach*55}%`);
   stage.style.setProperty('--mist-opacity',lerp(.8,.16,approach));
-  const phaseLabel=elapsed>=duration?'HACK THE CLOUD / ONLINE':elapsed>7?'ENTERING WINDSHIELD':elapsed>4.5?'HEADLIGHTS ACTIVE':'CLOUD DRIVE / APPROACH';
+  const phaseLabel=elapsed>=13?'HACK THE CLOUD / ONLINE':elapsed>7.5?'ENTERING WINDSHIELD':elapsed>5?'HEADLIGHTS ACTIVE':'CLOUD DRIVE / APPROACH';
   if(status.textContent!==phaseLabel) status.textContent=phaseLabel;
   stage.dataset.progress=elapsed.toFixed(2);
+  const progress=Math.floor(elapsed/duration*100);
+  if(progress!==lastProgress){lastProgress=progress;document.dispatchEvent(new CustomEvent('cloud:intro-progress',{detail:{progress:elapsed/duration,label:elapsed>=13?'Revealing Hack the Cloud':elapsed>7.5?'Opening the windshield':elapsed>5?'Synchronizing the headlights':'Driving through the clouds'}}));}
   renderer.render(scene,camera);
-  if (elapsed>=duration) {playing=false;stage.classList.remove('sequence-active');renderer.setAnimationLoop(null);}
+  if (elapsed>=duration) {playing=false;stage.classList.remove('sequence-active');renderer.setAnimationLoop(null);if(!notified){notified=true;document.dispatchEvent(new CustomEvent('cloud:intro-complete'));}}
 }
 
 function move(event) {
@@ -173,9 +217,15 @@ stage.addEventListener('keydown',event=>{
   if(!directions[event.key])return; event.preventDefault();
   pointer.x=clamp(pointer.x+directions[event.key][0],-1,1);pointer.y=clamp(pointer.y+directions[event.key][1],-1,1);
 });
-replay.addEventListener('click',()=>{stage.scrollIntoView({behavior:reduced.matches?'instant':'smooth',block:'start'});start();});
-explore.addEventListener('click',()=>{if(!ready)return;elapsed=5.8;playing=false;pointer.set(0,0);stage.scrollIntoView({behavior:reduced.matches?'instant':'smooth'});renderer.setAnimationLoop(renderFrame);renderFrame(performance.now());});
-enter.addEventListener('click',()=>{stage.scrollIntoView({behavior:reduced.matches?'instant':'smooth'});start(7);});
+replay.addEventListener('click',()=>{introSkipped=false;scrollTo({top:0,behavior:'instant'});document.dispatchEvent(new CustomEvent('cloud:replay-intro'));start();});
+explore.addEventListener('click',()=>{if(!ready)return;introSkipped=false;elapsed=6.8;playing=false;pointer.set(0,0);stage.scrollIntoView({behavior:reduced.matches?'instant':'smooth'});renderer.setAnimationLoop(renderFrame);renderFrame(performance.now());});
+enter.addEventListener('click',()=>{introSkipped=false;stage.scrollIntoView({behavior:reduced.matches?'instant':'smooth'});start(7.5);});
+wiperToggle.addEventListener('click',()=>{
+  wipersEnabled=!wipersEnabled;
+  wiperToggle.setAttribute('aria-pressed',String(wipersEnabled));
+  wiperToggle.textContent=`Wipers ${wipersEnabled?'on':'off'} ≋`;
+});
+document.addEventListener('cloud:skip-intro',()=>{introSkipped=true;if(ready){elapsed=duration;playing=false;renderFrame(performance.now());}});
 reduced.addEventListener('change',()=>{if(reduced.matches&&ready){elapsed=duration;playing=false;renderFrame(performance.now());}});
 document.addEventListener('visibilitychange',()=>{last=0;});
 addEventListener('resize',resize,{passive:true});
@@ -191,7 +241,12 @@ async function init() {
   const loader=new GLTFLoader();loader.setDRACOLoader(draco);
   const timeout = setTimeout(()=>{if(!ready)status.textContent='LOADING CAR · YOU CAN EXPLORE BELOW';},8000);
   let gltf;
-  try {gltf=await loader.loadAsync('assets/ferrari.glb');}
+  try {
+    [gltf,logoImage]=await Promise.all([
+      loader.loadAsync('assets/ferrari.glb'),
+      new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('HackHere logo could not load'));img.src='assets/hackhere-logo.png';})
+    ]);
+  }
   finally {clearTimeout(timeout);draco.dispose();}
   loadedScene=gltf.scene;car=gltf.scene.children[0];
   car.traverse(object=>{if(object.isMesh){object.castShadow=true;object.receiveShadow=true;}});
@@ -203,14 +258,21 @@ async function init() {
   scene.add(car);makeHeadlights();
   titlePlane=new THREE.Mesh(new THREE.PlaneGeometry(1.28,.62),new THREE.MeshBasicMaterial({map:labelTexture(),transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide,toneMapped:false}));
   titlePlane.position.set(0,1.03,-.785);titlePlane.rotation.set(-1.99,0,Math.PI);car.add(titlePlane);
+  makeWipers();
   ready=true;stage.classList.add('has-3d');
+  document.documentElement.classList.add('drive-ready');
   stage.dataset.renderer='webgl';stage.dataset.model='loaded';
   renderer.setAnimationLoop(renderFrame);
   let started=false;
-  const attempt=()=>{if(!started&&visible&&!document.documentElement.classList.contains('booting')){started=true;start();boot.disconnect();}};
+  const attempt=()=>{if(!started&&visible){started=true;start();}};
   const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;last=0;attempt();},{threshold:.12});observer.observe(stage);
-  const boot=new MutationObserver(attempt);boot.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
   attempt();
 }
+let letterIndex=0;
+document.getElementById('hero-title').setAttribute('aria-label','Hack the Cloud');
+document.querySelectorAll('#hero-title > span,#hero-title > em').forEach(line=>{
+  const text=line.textContent;line.textContent='';line.setAttribute('aria-hidden','true');
+  for(const letter of text){if(letter===' '){line.append(document.createTextNode(' '));continue;}const span=document.createElement('span');span.className='title-letter';span.textContent=letter;span.style.setProperty('--letter-delay',`${letterIndex++*.14}s`);line.append(span);}
+});
 glassScreen.inert=true;
 init().catch(fail);

@@ -1,6 +1,6 @@
 # Cloud car artwork
 
-Generated with the built-in image generation tool for this website. Final project asset: `dist/assets/cloud-car.png` (1672 × 941 PNG with transparency).
+Generated with the built-in image generation tool for this website. Original illustration retained at `public/assets/cloud-car.png` (1672 × 941 PNG with transparency); the cinematic opening now uses a real 3D model instead.
 
 ## Generation prompt
 

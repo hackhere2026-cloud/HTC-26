@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//HackHere//Hack the Cloud//EN
+BEGIN:VEVENT
+UID:hack-the-cloud-2026@hackhere
+DTSTAMP:20260927T000000Z
+DTSTART:20261024T033000Z
+DTEND:20261025T043000Z
+SUMMARY:Hack the Cloud
+LOCATION:Bengaluru
+DESCRIPTION:Draft event dates. Please verify the final details with the organizers. Application is not a confirmed pass.
+URL:https://moonshot-24.hackhere2026.chatgpt.site/
+END:VEVENT
+END:VCALENDAR

@@ -9,11 +9,14 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23242133'/%3E%3Cpath d='M15 38c0-7 6-12 13-12 2-8 15-8 18 1 7 0 9 11 1 13H19c-3 0-4-1-4-2z' fill='%235c5288' stroke='%23fffdf5' stroke-width='3'/%3E%3Cpath d='M16 15v10M11 20h10' stroke='%236ee7ff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="loader.css">
+  <link rel="stylesheet" href="loader.css?v=cinematic-intro-1">
   <link rel="stylesheet" href="event-layout.css">
-  <link rel="stylesheet" href="drive3d.css?v=3d-drive-1">
+  <link rel="stylesheet" href="drive3d.css?v=cinematic-intro-1">
+  <link rel="stylesheet" href="interactions.css?v=cinematic-intro-1">
+  <link rel="stylesheet" href="future.css?v=space-gloss-1">
+  <link rel="preload" href="assets/hackhere-logo.png" as="image">
   <script>
     document.documentElement.classList.add('booting');
     // The page remains accessible if any later script or asset fails.
@@ -21,32 +24,28 @@
       document.documentElement.classList.remove('booting');
       document.querySelectorAll('.reveal').forEach(element => element.classList.add('in-view'));
       const loader = document.getElementById('cloudLoader');
-      if (loader) loader.remove();
-    }, 6500);
+      if (loader) loader.hidden = true;
+      document.querySelectorAll('[data-intro-inert]').forEach(element => element.inert = false);
+      document.dispatchEvent(new CustomEvent('cloud:skip-intro'));
+    }, 35000);
   </script>
   <noscript><style>.reveal{opacity:1;transform:none}body,a,button,summary{cursor:auto}.windshield-screen{opacity:1;transform:none;pointer-events:auto}</style></noscript>
 </head>
 <body>
-  <div class="cloud-loader" id="cloudLoader" aria-label="Loading Hack the Cloud">
-    <div class="loader-stars" aria-hidden="true"><i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i><i>✧</i></div>
-    <div class="loader-content">
-      <p class="loader-eyebrow">24 hours. Infinite possibilities.</p>
-      <div class="loader-art" aria-hidden="true">
-        <div class="loader-ring"></div><div class="loader-ring loader-ring-back"></div>
-        <img src="assets/dream-coder.png" alt="" fetchpriority="high">
-        <span class="loader-code">&lt; dream / build / ship &gt;</span>
-      </div>
-      <h2 class="loader-title"><span>Hack the</span><strong>Cloud<span class="loader-period">.</span></strong></h2>
+  <div class="cloud-loader" id="cloudLoader" role="dialog" aria-modal="true" aria-label="Hack the Cloud launch sequence">
+    <span class="intro-brand"><img src="assets/hackhere-logo.png" alt="HackHere" width="201" height="134"> <span>HACK THE CLOUD<br><small>LAUNCH SEQUENCE / 2026</small></span></span>
+    <div class="loader-console">
+      <div class="loader-caption"><span id="loaderStatus" role="status">Loading the 3D environment</span><span id="loaderPercent" aria-hidden="true">00%</span></div>
       <div class="loader-meter" aria-hidden="true"><span id="loaderBar"></span></div>
-      <div class="loader-caption"><span id="loaderStatus" role="status">Gathering the clouds</span><span id="loaderPercent" aria-hidden="true">00%</span></div>
-      <button class="loader-skip" id="loaderSkip" type="button">Skip intro ↗</button>
+      <div class="loader-bottom"><span>LAUNCH SEQUENCE / 001</span><button class="loader-skip" id="loaderSkip" type="button">Skip intro ↗</button></div>
     </div>
   </div>
   <canvas id="sky" aria-hidden="true"></canvas>
   <div class="cursor-orbit" id="cursorOrbit" aria-hidden="true"><span></span></div>
   <header class="site-header">
-    <a class="logo magnetic" href="#top" aria-label="Hack the Cloud home"><span class="logo-mark">HC<span>24</span></span><span>Hack the Cloud</span></a>
-    <nav aria-label="Main navigation"><a href="#about">About</a><a href="#tracks">Tracks</a><a href="#schedule">Timeline</a><a href="#prizes">Prizes</a><a href="#faq">FAQ</a></nav>
+    <a class="logo magnetic" href="#top" aria-label="Hack the Cloud home"><span class="logo-mark" aria-hidden="true">H<span>↗</span></span><span class="event-wordmark">HACK THE<strong>CLOUD<span>_</span></strong></span></a>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav">Menu <span>+</span></button>
+    <nav id="primaryNav" aria-label="Main navigation"><a href="#about">About</a><a href="#tracks">Tracks</a><a href="#schedule">Timeline</a><a href="#prizes">Prizes</a><a href="#faq">FAQ</a></nav>
     <button class="nav-cta magnetic" type="button" data-open-register>Get a pass <span>↗</span></button>
   </header>
 
@@ -60,7 +59,7 @@
         <div class="hero-meta reveal"><div><strong>24–25 OCT</strong><span>Bengaluru</span></div><div><strong>300</strong><span>builders</span></div><div><strong>₹8L</strong><span>in prizes</span></div><div><strong>24H</strong><span>to ship</span></div></div>
       </div>
       <div class="cursor-showcase" id="playground">
-      <p id="dreamer-help" class="dreamer-instructions">Watch the drive through the clouds and into the windshield. Explore car pauses the sequence so you can aim the headlights with your mouse, touch, or arrow keys.</p>
+      <p id="dreamer-help" class="dreamer-instructions">Replay the cinematic launch, or explore the car and aim its headlights with your mouse, touch, or arrow keys.</p>
       <div class="hero-stage drive-stage" id="heroStage" tabindex="0" role="region" aria-label="Interactive cloud car headlights" aria-describedby="dreamer-help">
         <div class="showcase-label"><span>HC // CLOUD DRIVE</span><span id="dreamerStatus" role="status">PREPARING 3D SCENE</span></div>
         <div class="tech-grid" aria-hidden="true"></div>
@@ -71,8 +70,11 @@
         <canvas id="headlightCanvas" aria-hidden="true"></canvas>
         <div id="drive3d" aria-hidden="true"></div>
         <div id="windshieldScreen" class="windshield-screen">
-          <span class="glass-eyebrow">HACKHERE PRESENTS / 24 HOURS</span>
-          <h1 id="hero-title" class="screen-title"><span>Hack the</span><em>Cloud.</em></h1>
+          <canvas id="windshieldSky" aria-hidden="true"></canvas>
+          <div class="host-signature"><img src="assets/hackhere-logo.png" alt="HackHere" width="201" height="134"><span>PRESENTS<br><b>24-HOUR HACKATHON</b></span></div>
+          <span class="glass-eyebrow">IDEAS → CODE → IMPACT</span>
+          <h1 id="hero-title" class="screen-title"><span>HACK THE</span><em>CLOUD</em></h1>
+          <div class="title-coordinate" aria-hidden="true"><span>01 / BUILD</span><span>02 / CONNECT</span><span>03 / DEPLOY</span></div>
           <p>Build past midnight. Launch beyond limits.</p>
           <a class="primary-button" href="#eventDetails">Enter the hackathon ↓</a>
         </div>
@@ -80,7 +82,7 @@
         <div class="showcase-caption">BUILD / CONNECT / DEPLOY</div>
         <a class="scene-exit" href="#eventDetails">Explore event ↓</a>
       </div>
-      <div class="showcase-footer"><button class="text-link" id="replayDrive" type="button">Replay drive ↗</button><button class="text-link" id="resetDreamer" type="button">Explore car ↺</button><button class="text-link" id="enterWindshield" type="button">Enter windshield →</button><a class="model-credit" href="credits.html">3D credits</a></div>
+      <div class="showcase-footer"><button class="text-link" id="replayDrive" type="button">Replay intro ↗</button><button class="text-link" id="resetDreamer" type="button">Explore car ↺</button><button class="text-link" id="toggleWipers" type="button" aria-pressed="true">Wipers on ≋</button><button class="text-link" id="enterWindshield" type="button">Enter windshield →</button><a class="model-credit" href="credits.html">3D credits</a></div>
       </div>
     </section>
 
@@ -106,23 +108,26 @@
     <section class="tracks section-shell" id="tracks" aria-labelledby="tracks-title">
       <div class="section-head reveal"><div><span class="section-kicker">03 / Choose your orbit</span><h2 id="tracks-title">Four tracks.<br>Zero safe ideas.</h2></div><p>Pick a problem worth losing sleep over. Build solo or bring a team of up to four.</p></div>
       <div class="track-grid">
-        <article class="track-card tilt-card reveal"><span class="track-number">01</span><div class="track-glyph">✦</div><h3>Human × AI</h3><p>Tools that amplify people instead of replacing them.</p><small>Sponsored challenge</small></article>
-        <article class="track-card tilt-card reveal"><span class="track-number">02</span><div class="track-glyph">◌</div><h3>Planet+</h3><p>Climate, cities and systems built for a longer future.</p><small>Open hardware welcome</small></article>
-        <article class="track-card tilt-card reveal"><span class="track-number">03</span><div class="track-glyph">⌁</div><h3>New Realities</h3><p>Spatial, immersive and playful ways to see the world.</p><small>Wildcards encouraged</small></article>
-        <article class="track-card tilt-card reveal"><span class="track-number">04</span><div class="track-glyph">∞</div><h3>Open Orbit</h3><p>The brilliant thing that refuses to fit in a box.</p><small>No brief, no limits</small></article>
+        <article class="track-card tilt-card reveal"><span class="track-number">01</span><div class="track-glyph">✦</div><h3>Human × AI</h3><p>Tools that amplify people instead of replacing them.</p><small>Sponsored challenge</small><button class="track-explore" data-track="ai" aria-expanded="false" aria-controls="trackPanel">Explore Human × AI <span>↗</span></button></article>
+        <article class="track-card tilt-card reveal"><span class="track-number">02</span><div class="track-glyph">◌</div><h3>Planet+</h3><p>Climate, cities and systems built for a longer future.</p><small>Open hardware welcome</small><button class="track-explore" data-track="planet" aria-expanded="false" aria-controls="trackPanel">Explore Planet+ <span>↗</span></button></article>
+        <article class="track-card tilt-card reveal"><span class="track-number">03</span><div class="track-glyph">⌁</div><h3>New Realities</h3><p>Spatial, immersive and playful ways to see the world.</p><small>Wildcards encouraged</small><button class="track-explore" data-track="realities" aria-expanded="false" aria-controls="trackPanel">Explore New Realities <span>↗</span></button></article>
+        <article class="track-card tilt-card reveal"><span class="track-number">04</span><div class="track-glyph">∞</div><h3>Open Orbit</h3><p>The brilliant thing that refuses to fit in a box.</p><small>No brief, no limits</small><button class="track-explore" data-track="open" aria-expanded="false" aria-controls="trackPanel">Explore Open Orbit <span>↗</span></button></article>
       </div>
+      <section class="track-panel" id="trackPanel" aria-labelledby="selectedTrackTitle" hidden tabindex="-1"><div><span class="section-kicker">YOUR NEXT BUILD</span><h3 id="selectedTrackTitle"></h3><p id="selectedTrackDescription"></p></div><div><span class="track-panel-label">IDEAS TO GET YOU STARTED</span><ul id="trackIdeas"></ul><button class="secondary-button" type="button" data-open-register>Choose this track ↗</button></div></section>
     </section>
 
     <section class="schedule section-shell" id="schedule" aria-labelledby="schedule-title">
       <div class="schedule-copy reveal"><span class="section-kicker">04 / The flight plan</span><h2 id="schedule-title">24 hours.<br>Every minute counts.</h2><p>We handle the fuel: meals, mentors, caffeine, hardware and a place to crash. You handle the build.</p><button class="secondary-button magnetic" type="button" data-open-register>Join the mission <span>↗</span></button></div>
+      <div class="schedule-program"><div class="program-filters" role="group" aria-label="Filter event schedule"><button type="button" data-day="all" aria-pressed="true">All 24 hours</button><button type="button" data-day="one" aria-pressed="false">24 Oct</button><button type="button" data-day="two" aria-pressed="false">25 Oct</button></div><p class="schedule-count" id="scheduleCount" aria-live="polite">6 milestones · all times IST</p>
       <ol class="timeline">
-        <li class="reveal"><time>09:00</time><div><strong>Doors + breakfast</strong><span>Find your team, fuel up, plug in.</span></div><b>01</b></li>
-        <li class="reveal"><time>10:00</time><div><strong>Launch briefing</strong><span>Challenge reveals. The clock starts.</span></div><b>02</b></li>
-        <li class="reveal"><time>14:00</time><div><strong>Mentor orbit I</strong><span>Product, engineering and design reviews.</span></div><b>03</b></li>
-        <li class="reveal"><time>00:00</time><div><strong>Midnight signal</strong><span>Secret mini-challenge + ramen drop.</span></div><b>04</b></li>
-        <li class="reveal"><time>06:00</time><div><strong>Final burn</strong><span>Testing, polish and pitch practice.</span></div><b>05</b></li>
-        <li class="reveal"><time>10:00</time><div><strong>Demos + awards</strong><span>Three minutes to make us believe.</span></div><b>06</b></li>
+        <li class="reveal" data-program-day="one"><time>09:00</time><div><strong>Doors + breakfast</strong><span>Find your team, fuel up, plug in.</span></div><b>01</b></li>
+        <li class="reveal" data-program-day="one"><time>10:00</time><div><strong>Launch briefing</strong><span>Challenge reveals. The clock starts.</span></div><b>02</b></li>
+        <li class="reveal" data-program-day="one"><time>14:00</time><div><strong>Mentor orbit I</strong><span>Product, engineering and design reviews.</span></div><b>03</b></li>
+        <li class="reveal" data-program-day="two"><time>00:00</time><div><strong>Midnight signal</strong><span>Secret mini-challenge + ramen drop.</span></div><b>04</b></li>
+        <li class="reveal" data-program-day="two"><time>06:00</time><div><strong>Final burn</strong><span>Testing, polish and pitch practice.</span></div><b>05</b></li>
+        <li class="reveal" data-program-day="two"><time>10:00</time><div><strong>Demos + awards</strong><span>Three minutes to make us believe.</span></div><b>06</b></li>
       </ol>
+      <a class="text-link calendar-link" href="assets/hack-the-cloud.ics" download>Save event dates ↗</a></div>
     </section>
 
     <section class="prizes section-shell" id="prizes" aria-labelledby="prizes-title">
@@ -133,7 +138,7 @@
 
     <section class="faq section-shell" id="faq" aria-labelledby="faq-title">
       <div class="faq-heading reveal"><span class="section-kicker">06 / Transmission log</span><h2 id="faq-title">Questions,<br>answered.</h2></div>
-      <div class="accordion">
+      <div class="accordion"><label class="faq-search">Find an answer<input id="faqSearch" type="search" placeholder="Search questions…" autocomplete="off"></label><p id="faqEmpty" hidden>No matching questions. Try “team”, “cost”, or “bring”.</p>
         <details class="reveal"><summary>Who can participate?<span>+</span></summary><p>Students, designers, engineers, researchers and first-time builders aged 18+. Curiosity matters more than credentials.</p></details>
         <details class="reveal"><summary>Can I come without a team?<span>+</span></summary><p>Absolutely. We run a team-matching session before kickoff, and plenty of strong teams form in the room.</p></details>
         <details class="reveal"><summary>What should I bring?<span>+</span></summary><p>Your laptop, charger, ID, water bottle and anything special your prototype needs. We provide Wi-Fi, food and basic hardware kits.</p></details>
@@ -144,21 +149,23 @@
     <section class="final-cta section-shell"><div class="cta-orb" aria-hidden="true"></div><span class="section-kicker reveal">Applications close 18 October</span><h2 class="reveal">Your impossible idea<br>needs <em>one night.</em></h2><button class="primary-button light magnetic reveal" type="button" data-open-register>Build with us <span>↗</span></button></section>
   </main>
 
-  <footer class="site-footer section-shell"><a class="logo" href="#top"><span class="logo-mark">HC<span>24</span></span><span>Hack the Cloud</span></a><p>24 hours to make tomorrow tangible.</p><div><a href="#">Instagram</a><a href="#">Discord</a><a href="mailto:hello@moonshot24.dev">Email</a></div><small>© 2026 Hack the Cloud · Bengaluru</small></footer>
+  <footer class="site-footer section-shell"><a class="logo" href="#top" aria-label="Hack the Cloud home"><span class="logo-mark" aria-hidden="true">H<span>↗</span></span><span class="event-wordmark">HACK THE<strong>CLOUD<span>_</span></strong></span></a><p>24 hours to make tomorrow tangible.</p><div><button class="footer-link" type="button" id="copyEventLink">Copy event link</button><a href="assets/hack-the-cloud.ics" download>Save dates</a><a href="privacy.html">Registration privacy</a></div><small>© 2026 Hack the Cloud · Bengaluru</small><p id="copyStatus" class="copy-status" role="status"></p></footer>
 
   <dialog class="register-dialog" id="registerDialog" aria-labelledby="registerTitle">
     <button class="dialog-close" type="button" aria-label="Close registration">×</button>
-    <div class="dialog-copy"><span class="section-kicker">Board the mission</span><h2 id="registerTitle">Save your seat.</h2><p>Leave your details and we'll send the application pack.</p></div>
-    <form id="registerForm"><label>Full name<input name="name" autocomplete="name" required placeholder="Your name"></label><label>Email address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label><label>Your superpower<select name="role" required><option value="">Choose one</option><option>Engineering</option><option>Design</option><option>Product</option><option>Research</option><option>Something else entirely</option></select></label><button class="primary-button" type="submit">Send me the brief <span>↗</span></button><p class="form-note">No spam. Just the application link and event updates.</p></form>
-    <div class="form-success" hidden><span>✦</span><h2>Signal received.</h2><p>Check your inbox for the Hack the Cloud application pack.</p><button class="secondary-button" type="button" data-close-register>Back to the site</button></div>
+    <div class="dialog-copy"><span class="section-kicker">Board the mission</span><h2 id="registerTitle">Your build starts here.</h2><p>Apply to Hack the Cloud. Save your application reference after submitting.</p></div>
+    <form id="registerForm"><label>Full name<input name="name" autocomplete="name" minlength="2" maxlength="100" required placeholder="Your name"></label><label>Email address<input name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"></label><label>Your superpower<select name="role" required><option value="">Choose one</option><option>Engineering</option><option>Design</option><option>Product</option><option>Research</option><option>Something else entirely</option></select></label><label>Your track<select name="track" id="registrationTrack"><option value="ai">Human × AI</option><option value="planet">Planet+</option><option value="realities">New Realities</option><option value="open">Open Orbit</option></select></label><label>Team name <small>(optional)</small><input name="teamName" maxlength="100" placeholder="Flying solo? Leave this blank"></label><label class="bot-field" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label><label class="consent"><input type="checkbox" name="consent" required><span>I agree to share these details with the Hack the Cloud organizers for my application and event communications.</span></label><p class="form-error" id="registrationError" role="alert" hidden></p><button class="primary-button" type="submit" id="registrationSubmit">Submit application <span>↗</span></button><p class="form-note">An application is not a confirmed event pass. No automatic email is sent. <a href="privacy.html" target="_blank" rel="noopener">How we use your information</a></p></form>
+    <div class="form-success" hidden tabindex="-1"><span>✦</span><h2>Application received.</h2><p id="profileSummary"></p><code class="registration-reference" id="registrationReference"></code><p id="registrationNote">Save this reference. Your application has been stored for the organizers to review; this is not yet a confirmed pass.</p><button class="secondary-button" type="button" id="copyReference">Copy reference</button><p id="referenceCopyStatus" role="status"></p><button class="text-link" type="button" data-close-register>Back to the site</button></div>
   </dialog>
   <aside class="event-dock" id="eventDock" aria-label="Event quick access" hidden>
     <div><strong>Hack the Cloud</strong><span>24–25 Oct · Bengaluru</span></div>
     <a href="#schedule">The 24 hours ↓</a>
     <button type="button" class="primary-button" data-open-register>Get a pass ↗</button>
   </aside>
-  <script src="app.js?v=3d-drive-1"></script>
-  <script src="event-motion.js?v=3d-drive-1"></script>
-  <script type="module" src="drive3d.js?v=3d-drive-1"></script>
+  <script src="app.js?v=space-gloss-1"></script>
+  <script src="space.js?v=space-gloss-1"></script>
+  <script src="event-motion.js?v=cinematic-intro-1"></script>
+  <script src="interactions.js?v=cinematic-intro-1"></script>
+  <script type="module" src="drive3d.js?v=hackhere-glass-1"></script>
 </body>
 </html>

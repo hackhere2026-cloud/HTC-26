@@ -1,0 +1,125 @@
+/* Technical editorial layer — preserve the established Hack the Cloud palette. */
+:root { --tech-font:'Chakra Petch','Manrope',sans-serif; }
+body::after { content:''; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.24; background-image:linear-gradient(rgba(117,106,167,.11) 1px,transparent 1px),linear-gradient(90deg,rgba(117,106,167,.11) 1px,transparent 1px); background-size:88px 88px; mask-image:linear-gradient(transparent 20%,black); }
+.site-header,.site-header.scrolled { border-radius:0; border-color:rgba(110,231,255,.2); border-width:0 0 1px; background:rgba(25,23,38,.9); }
+.site-header::after { content:''; position:absolute; bottom:-1px; left:18px; width:70px; height:2px; background:var(--cyan); box-shadow:0 0 18px rgba(110,231,255,.35); }
+.site-header .logo { gap:12px; }
+.logo .logo-mark { position:relative; width:43px; height:43px; border-radius:0; border:1px solid var(--cyan); border-width:1px 0 1px 2px; background:linear-gradient(135deg,rgba(110,231,255,.14),rgba(85,75,129,.2)); font:700 30px/1 var(--tech-font); color:var(--cream); box-shadow:none; transform:skew(-8deg); }
+.logo .logo-mark span { position:absolute; right:-3px; top:0; font:500 15px/1 'DM Mono',monospace; color:var(--cyan); }
+.event-wordmark { display:grid; gap:1px; font:700 12px/1.1 var(--tech-font); letter-spacing:.18em; }
+.event-wordmark strong { font:700 23px/1 var(--tech-font); letter-spacing:.10em; color:var(--cream); }
+.event-wordmark strong span { color:var(--cyan); }
+.site-header nav a { font-family:var(--tech-font); font-size:15px; letter-spacing:.025em; position:relative; }
+.site-header nav a::after { content:''; position:absolute; inset:auto 0 -8px; height:1px; background:var(--cyan); transform:scaleX(0); transform-origin:left; transition:transform .25s; }
+.site-header nav a:hover::after,.site-header nav a:focus-visible::after { transform:scaleX(1); }
+.nav-cta { font-family:var(--tech-font); font-size:15px; }
+.intro-brand { display:flex; align-items:center; gap:18px; top:20px; }
+.intro-brand img { width:75px; height:50px; object-fit:contain; }
+.intro-brand>span { font:600 13px/1.7 var(--tech-font); letter-spacing:.16em; }
+.intro-brand small { font:10px 'DM Mono',monospace; color:var(--muted); letter-spacing:.1em; }
+.loader-console { border-radius:0; border-color:rgba(110,231,255,.3); border-left:2px solid var(--cyan); background:rgba(25,23,38,.94); }
+.windshield-screen { overflow:hidden; background:radial-gradient(ellipse at 50% 20%,rgba(85,75,129,.48),transparent 68%),var(--night-2); padding-top:112px; padding-bottom:80px; }
+.windshield-screen::before { inset:22px; border:1px solid rgba(110,231,255,.15); background-image:linear-gradient(rgba(110,231,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(110,231,255,.04) 1px,transparent 1px); background-size:72px 72px; mask-image:linear-gradient(black,transparent 48%,black); }
+.host-signature { display:flex; align-items:center; gap:14px; position:relative; margin-bottom:16px; }
+.host-signature img { object-fit:contain; width:78px; height:52px; }
+.host-signature>span { padding-left:14px; border-left:1px solid var(--line); text-align:left; font:10px/1.9 'DM Mono',monospace; color:var(--muted); letter-spacing:.12em; }
+.host-signature b { font-weight:400; color:var(--cream); }
+.glass-eyebrow { font-size:12px; letter-spacing:.28em; }
+.hero .windshield-screen h1 { position:relative; width:max-content; max-width:100%; margin:18px 0 22px; font:700 clamp(64px,min(11.5vw,15svh),164px)/.90 var(--tech-font); letter-spacing:-.035em; text-transform:uppercase; }
+.hero .windshield-screen h1>span { font-size:.57em; letter-spacing:.16em; word-spacing:0; margin:0 0 12px .16em; }
+.hero .windshield-screen h1>em { font-style:normal; letter-spacing:.025em; color:var(--cyan); text-shadow:0 1px 0 var(--cream),0 0 70px rgba(110,231,255,.17); }
+.hero .windshield-screen h1::before,.hero .windshield-screen h1::after { content:''; position:absolute; width:20px; height:20px; border-color:var(--cyan); border-style:solid; opacity:.65; }
+.hero .windshield-screen h1::before { left:-32px; top:0; border-width:1px 0 0 1px; }
+.hero .windshield-screen h1::after { right:-25px; bottom:0; border-width:0 1px 1px 0; }
+.title-coordinate { display:flex; justify-content:center; gap:24px; color:var(--muted); font:11px 'DM Mono',monospace; letter-spacing:.1em; padding:14px 0; border-block:1px solid rgba(110,231,255,.16); }
+.windshield-screen p { font-size:16px; margin:20px 0 24px; }
+.primary-button,.secondary-button { font-family:var(--tech-font); font-size:15px; letter-spacing:.08em; border-radius:0; position:relative; }
+.primary-button { background:var(--cyan); border-color:var(--cyan); box-shadow:0 0 30px rgba(110,231,255,.08); }
+.primary-button::before { content:''; position:absolute; inset:4px; border:1px solid rgba(36,33,51,.28); pointer-events:none; }
+.primary-button:hover { background:var(--cream); box-shadow:4px 4px 0 var(--violet); }
+.hero .hero-copy { padding:65px 0 24px; gap:28px 65px; }
+.hero .event-chip { background:none; padding:0 0 0 14px; border:0; border-left:2px solid var(--cyan); font-size:12px; }
+.hero .hero-tagline { font-family:var(--tech-font); font-size:clamp(30px,3.4vw,46px); line-height:1.12; font-weight:600; }
+.hero .hero-meta { background:rgba(25,23,38,.65); border:1px solid var(--line); border-radius:0; }
+.hero-meta strong { font-family:var(--tech-font); font-size:24px; }
+.hero-meta span { font-size:12px; }
+.hero .showcase-footer { gap:22px; border-top:1px solid rgba(110,231,255,.14); padding-top:12px; }
+.showcase-footer .text-link { font:13px 'DM Mono',monospace; }
+#toggleWipers[aria-pressed=true] { color:var(--cyan); border-color:var(--cyan); }
+.section-kicker { font-size:12px; letter-spacing:.19em; }
+.manifesto h2,.section-head h2,.schedule h2,.prizes h2,.faq h2,.final-cta h2 { font-family:var(--tech-font); font-weight:600; letter-spacing:-.025em; line-height:1; }
+.section-head h2,.schedule h2,.faq h2 { font-size:clamp(42px,5.2vw,72px); }
+.manifesto,.tracks,.judges,.schedule,.prizes,.faq { padding-top:125px; }
+.overview-card,.track-card,.judge,.prize-card { border-radius:0; background-color:var(--night-2); border-color:rgba(117,106,167,.4); border-top-color:rgba(110,231,255,.4); box-shadow:inset 0 1px rgba(110,231,255,.05); overflow:hidden; }
+.overview-card::before,.track-card::before,.judge::before,.prize-card::before { content:''; position:absolute; right:0; top:0; width:18px; height:18px; background:linear-gradient(45deg,transparent 47%,var(--cyan) 49%,var(--cyan) 51%,var(--night) 53%); opacity:.7; pointer-events:none; }
+.overview-card h3,.track-card h3,.judge h3 { font-family:var(--tech-font); letter-spacing:.02em; }
+.track-card h3 { font-size:26px; }
+.track-number { font:500 24px var(--tech-font); color:var(--muted); }
+.track-glyph { margin-block:32px; }
+.track-card small { color:var(--muted); font-size:12px; line-height:1.5; }
+.track-card p,.timeline span,.prize-card p,.judge p { font-size:14px; line-height:1.65; }
+.judge-avatar { border-radius:0; height:190px; background-size:100%; font-family:var(--tech-font); border-bottom:1px solid rgba(110,231,255,.3); }
+.track-panel,.register-dialog { border-radius:0; border-top:2px solid var(--cyan); background:linear-gradient(140deg,rgba(85,75,129,.28),transparent),var(--night-2); }
+.track-panel h3,.dialog-copy h2,.form-success h2 { font-family:var(--tech-font); }
+.countdown-strip { border-left:0; background:linear-gradient(90deg,rgba(85,75,129,.35),rgba(25,23,38,.9)); }
+.countdown strong { font-family:var(--tech-font); letter-spacing:.01em; font-variant-numeric:tabular-nums; }
+.countdown span { font-size:12px; }
+.timeline li { padding-inline:18px; margin-bottom:10px; border:1px solid var(--line); background:rgba(25,23,38,.6); border-radius:0; }
+.timeline time { font-size:14px; }
+.timeline strong { font:600 21px var(--tech-font); }
+.program-filters button { border-radius:0; }
+.prize-card strong { font-family:var(--tech-font); }
+.prize-card.first { border-top:2px solid var(--cyan); }
+.faq details { padding-inline:16px; }
+summary span { border-radius:0; }
+.faq-search input,.register-dialog input,.register-dialog select { border-radius:2px; }
+.register-dialog label { font-size:13px; }
+.register-dialog input,.register-dialog select { font-size:16px; }
+.register-dialog .form-note { font-size:12px; line-height:1.6; }
+.final-cta { border-radius:0; border-block-color:rgba(110,231,255,.4); background:linear-gradient(140deg,rgba(85,75,129,.6),rgba(25,23,38,.95)); }
+.final-cta .cta-orb { border-radius:0; transform:rotate(45deg); animation:tech-orbit 16s ease-in-out infinite; opacity:.35; }
+.event-dock { border-radius:0; border-top:1px solid var(--cyan); }
+@keyframes tech-orbit { 50% { transform:rotate(60deg) scale(.85); } }
+@media(max-width:760px) {
+ .hero .windshield-screen h1 { font-size:clamp(60px,17vw,112px); }
+ .hero .windshield-screen h1::before { left:-18px;width:12px;height:12px; }
+ .hero .windshield-screen h1::after { right:-18px;width:12px;height:12px; }
+ .windshield-screen { padding-inline:26px; padding-top:110px; }
+ .host-signature { margin-bottom:24px; }
+ .glass-eyebrow { font-size:10px; letter-spacing:.12em; }
+ .title-coordinate { gap:14px; font-size:9px; letter-spacing:0; }
+ .windshield-screen p { max-width:270px; font-size:15px; }
+ .hero .hero-copy { padding-top:38px; gap:22px; }
+ .hero .hero-meta strong { font-size:20px; }
+ .hero .hero-meta span { font-size:10px; }
+ .hero .showcase-footer { display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; }
+ .model-credit { margin-left:0; }
+ .site-header .logo { gap:8px; }
+ .logo .logo-mark { width:34px; height:36px; font-size:26px; }
+ .event-wordmark { font-size:9px; letter-spacing:.13em; }
+ .event-wordmark strong { font-size:18px; }
+ .site-header .nav-cta { font-size:12px; }
+ .site-header .nav-cta span { margin-left:4px; }
+ .timeline li { padding-inline:12px; }
+ .manifesto,.tracks,.judges,.schedule,.prizes,.faq { padding-top:95px; }
+}
+@media(max-height:730px) { .windshield-screen{padding-block:85px 65px}.host-signature{margin-bottom:10px}.host-signature img{height:38px;width:57px}.hero .windshield-screen h1{margin-block:14px}.windshield-screen p{margin-block:14px}.title-coordinate{padding-block:9px} }
+@media(prefers-reduced-motion:reduce) { .final-cta .cta-orb{animation:none}.site-header nav a::after{transition:none} }
+
+/* Polished glass over a quiet, living starfield. Highlights never cover text. */
+#windshieldSky { position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:.8; }
+.windshield-screen > :not(canvas) { position:relative; z-index:1; }
+.windshield-screen::before { z-index:0; }
+.windshield-screen { background:radial-gradient(ellipse at 25% 10%,rgba(117,106,167,.29),transparent 62%),radial-gradient(ellipse at 80% 90%,rgba(96,119,122,.16),transparent 55%),var(--night-2); }
+.site-header,.site-header.scrolled,.event-dock,.loader-console { background-image:linear-gradient(115deg,rgba(255,253,245,.09),transparent 34%,rgba(110,231,255,.035) 70%,transparent); box-shadow:inset 0 1px 0 rgba(255,253,245,.18),inset 0 -1px 0 rgba(110,231,255,.07),0 12px 36px rgba(12,11,20,.22); }
+.overview-card,.track-card,.judge,.prize-card,.track-panel { background:radial-gradient(ellipse at var(--shine-x,35%) var(--shine-y,0%),rgba(110,231,255,.12),transparent 65%),linear-gradient(125deg,rgba(255,253,245,.105),rgba(117,106,167,.04) 38%,rgba(255,253,245,.015) 55%,rgba(110,231,255,.055)),rgba(25,23,38,.82); border-color:rgba(170,164,187,.24); border-top-color:rgba(255,253,245,.38); box-shadow:inset 0 1px 0 rgba(255,253,245,.08),inset 0 -1px 0 rgba(110,231,255,.06),0 18px 48px rgba(12,11,20,.2); }
+.overview-card:hover,.track-card:hover,.judge:hover,.prize-card:hover { box-shadow:inset 0 1px 0 rgba(255,253,245,.25),0 20px 50px rgba(12,11,20,.3),0 0 26px rgba(110,231,255,.055); }
+.prize-card.first { background:radial-gradient(ellipse at var(--shine-x,35%) var(--shine-y,0%),rgba(255,253,245,.18),transparent 55%),linear-gradient(140deg,var(--violet),rgba(85,75,129,.35) 48%,var(--night-2)); }
+.track-card::after,.overview-card::after { background:linear-gradient(90deg,transparent,rgba(255,253,245,.1),rgba(110,231,255,.055),transparent); }
+.primary-button,.primary-button.light { background:linear-gradient(170deg,rgba(255,253,245,.7),rgba(255,253,245,.15) 43%,transparent 45%),var(--cyan); box-shadow:inset 0 1px 0 var(--cream),inset 0 -2px 0 rgba(36,33,51,.2),0 5px 22px rgba(110,231,255,.16); }
+.primary-button:hover { background:linear-gradient(165deg,var(--cream),rgba(255,253,245,.4) 48%,transparent 49%),var(--cyan); box-shadow:inset 0 1px var(--cream),0 8px 32px rgba(110,231,255,.26); }
+.secondary-button,.program-filters button,.timeline li,.hero .hero-meta { background-image:linear-gradient(135deg,rgba(255,253,245,.065),transparent 48%); box-shadow:inset 0 1px rgba(255,253,245,.1); }
+.register-dialog { background-image:linear-gradient(135deg,rgba(255,253,245,.075),transparent 45%),radial-gradient(ellipse at top,rgba(85,75,129,.35),transparent 70%); box-shadow:inset 0 1px rgba(255,253,245,.3),0 40px 120px rgba(0,0,0,.6); }
+.hero .windshield-screen h1>em .title-letter { color:var(--cyan); background:linear-gradient(175deg,var(--cream),var(--cyan) 44%,#70cadd 46%,var(--cyan) 72%); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:none; filter:drop-shadow(0 3px 0 rgba(85,75,129,.45)); }
+.hero .windshield-screen h1>em .title-letter { transition:opacity 1.4s var(--letter-delay),transform 1.4s var(--letter-delay); }
+@media(prefers-reduced-motion:reduce) { .hero .windshield-screen h1>em .title-letter{transition:none} }
